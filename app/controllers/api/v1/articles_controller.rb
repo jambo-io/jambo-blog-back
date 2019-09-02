@@ -19,7 +19,7 @@ class Api::V1::ArticlesController < ApplicationController
     @article = Article.new(article_params)
 
     if @article.save
-      render json: @article, status: :created, location: @article
+      render json: @article, status: :created
     else
       render json: @article.errors, status: :unprocessable_entity
     end
@@ -27,6 +27,7 @@ class Api::V1::ArticlesController < ApplicationController
 
   # PATCH/PUT /articles/1
   def update
+    
     if @article.update(article_params)
       render json: @article
     else
@@ -36,7 +37,12 @@ class Api::V1::ArticlesController < ApplicationController
 
   # DELETE /articles/1
   def destroy
-    @article.destroy
+    if @article.destroy
+      render json: {
+        status: 200,
+        message: 'OK'
+      }
+    end
   end
 
   private
@@ -47,6 +53,6 @@ class Api::V1::ArticlesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def article_params
-      params.require(:article).permit(:title, :article)
+      params.require(:article).permit(:title, :article, :wall)
     end
 end
