@@ -4,8 +4,9 @@ class Api::V1::ArticlesController < ApplicationController
 
   # GET /articles
   def index
-    @articles = Article.all
-
+    limit = params[:limit].to_i
+    offset = params[:current_page].to_i * limit ||=0
+    @articles = Article.all.offset(offset).limit(limit)
     render json: @articles
   end
 

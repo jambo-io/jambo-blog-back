@@ -10,8 +10,13 @@ class Api::V1::GaleriesController < ApplicationController
         puts "params upload"
         galery = Galery.create(galery_params)
         puts galery.inspect
+   
         if galery.present?
-            path = Rails.application.routes.url_helpers.rails_blob_path(galery.upload, only_path: true)
+            require "mini_magick"
+            path = Rails.application.routes.url_helpers.rails_representation_url(galery.upload.variant(resize: "300x300").processed, only_path: true)
+
+            puts "end path"
+            puts path.inspect
             render json: {
                 "uploaded": 1,
                 "fileName": "foo.jpg",
