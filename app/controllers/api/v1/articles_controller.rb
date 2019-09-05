@@ -4,10 +4,34 @@ class Api::V1::ArticlesController < ApplicationController
 
   # GET /articles
   def index
+
+    current_page = params[:current_page].to_i
     limit = params[:limit].to_i
-    offset = params[:current_page].to_i * limit ||=0
+    offset = current_page * limit ||=0
+    has_more = true
+
+    total_pages = (Article.count / limit).to_i
+
+    if current_page > total_pages 
+      render json: {
+        status: 404,
+        message: "No more data"
+      }
+      return nil
+    end
+    
+    if (current_page == total_pages)
+      has_more = false
+    end
+
     @articles = Article.all.offset(offset).limit(limit)
-    render json: @articles
+    render json: {
+      current_page: current_page,
+      total_pages: total_pages,
+      limit: limit,
+      has_more: has_more,
+      articles: @articles
+    }
   end
 
   # GET /articles/1
