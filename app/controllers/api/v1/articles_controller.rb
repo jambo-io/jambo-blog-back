@@ -23,15 +23,28 @@ class Api::V1::ArticlesController < ApplicationController
     if (current_page == total_pages)
       has_more = false
     end
-
+    
     @articles = Article.all.offset(offset).limit(limit)
-    render json: {
-      current_page: current_page,
-      total_pages: total_pages,
-      limit: limit,
-      has_more: has_more,
-      articles: @articles
-    }
+
+    articles_array = []
+    @articles.each do |article|
+        article_json = {
+          id: article.id,
+          title: article.title,
+          article: article.article,
+          wall_thumb_url: article.wall_thumb_url
+        }
+        articles_array.push(article_json)
+    end
+
+     render json: {
+       current_page: current_page,
+       total_pages: total_pages,
+       limit: limit,
+       has_more: has_more,
+       articles: articles_array
+     }
+    
   end
 
   # GET /articles/1

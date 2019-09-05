@@ -1,8 +1,9 @@
 class ArticleSerializer < ActiveModel::Serializer
-  self.representation_wrap = :data
-  attribute :test
   attributes :id, :title, :article, :wall_url
 
+  def id
+    object.id
+  end
   def test
     1
   end
