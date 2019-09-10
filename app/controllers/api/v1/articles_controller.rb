@@ -1,7 +1,7 @@
 
 class Api::V1::ArticlesController < ApplicationController
   before_action :set_article, only: [:show, :update, :destroy]
-
+  include Rails.application.routes.url_helpers
   # GET /articles
   def index
 
@@ -20,21 +20,26 @@ class Api::V1::ArticlesController < ApplicationController
       return nil
     end
     
-    if (current_page == total_pages)
+    if (current_page == 1)
       has_more = false
     end
     
     @articles = Article.all.offset(offset).limit(limit)
-
+    
     articles_array = []
     @articles.each do |article|
+        thumb_url = nil
+        if article.wall.present?
+          thumb_url = article.wall_thumb_url
+        end
         article_json = {
           id: article.id,
           title: article.title,
           article: article.article,
-          wall_thumb_url: article.wall_thumb_url
+          wall_thumb_url: thumb_url,
+          created_at: article.created_time_ago
         }
-        articles_array.push(article_json)
+        articles_array.unshift(article_json)
     end
 
      render json: {
