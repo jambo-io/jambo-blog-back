@@ -12,7 +12,9 @@ class Article < ApplicationRecord
     def wall_thumb_url
         if self.wall.present?
           require "mini_magick"
-          Rails.application.routes.url_helpers.rails_representation_url(self.wall.variant(resize: "300x300").processed, only_path: true)
+
+            #Rails.application.routes.url_helpers.rails_representation_url(self.wall.variant(resize: "300x300").processed, only_path: true)
+
         end
     end
 

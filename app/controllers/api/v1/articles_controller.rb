@@ -10,7 +10,12 @@ class Api::V1::ArticlesController < ApplicationController
     offset = current_page * limit ||=0
     has_more = true
 
-    total_pages = (Article.count / limit).to_i
+    total_articles = Article.count
+    if (total_articles % limit == 0 )
+      total_pages = (total_articles / limit).to_i - 1
+    else 
+      total_pages = (total_articles / limit).to_i
+    end
 
     if current_page > total_pages 
       render json: {
@@ -45,6 +50,7 @@ class Api::V1::ArticlesController < ApplicationController
      render json: {
        current_page: current_page,
        total_pages: total_pages,
+       total_articles: total_articles,
        limit: limit,
        has_more: has_more,
        articles: articles_array
